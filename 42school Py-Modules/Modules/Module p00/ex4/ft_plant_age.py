@@ -1,22 +1,18 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    ft_hello_garden.py                                 :+:      :+:    :+:    #
+#    ft_plant_age.py                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: pidi <pidi@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/07/02 19:15:05 by pidi              #+#    #+#              #
-#    Updated: 2026/07/02 20:45:10 by pidi             ###   ########.fr        #
+#    Created: 2026/07/02 20:49:25 by pidi              #+#    #+#              #
+#    Updated: 2026/07/02 21:01:27 by pidi             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-def ft_hello_garden():
-	print ("Hello, Garden Community!")
-
-''' from ft_hello_garden import ft_hello_garden
-
-def main():
-	ft_hello_garden()
-
-if __name__ == "__main__":
-    main() '''s
+def ft_plant_age():
+	days = int(input("Enter plant age in days: "))
+	if (days <= 60):
+		print("Plant needs more time to grow.")
+	else:
+		print("Plant is ready to harvest!")

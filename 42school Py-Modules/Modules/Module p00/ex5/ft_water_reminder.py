@@ -1,22 +1,20 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    ft_hello_garden.py                                 :+:      :+:    :+:    #
+#    ft_water_reminder.py                               :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: pidi <pidi@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/07/02 19:15:05 by pidi              #+#    #+#              #
-#    Updated: 2026/07/02 20:45:10 by pidi             ###   ########.fr        #
+#    Created: 2026/07/02 21:10:21 by pidi              #+#    #+#              #
+#    Updated: 2026/07/02 22:11:13 by pidi             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-def ft_hello_garden():
-	print ("Hello, Garden Community!")
+def ft_water_reminder():
+    days = int(input("Days since last watering: "))
 
-''' from ft_hello_garden import ft_hello_garden
-
-def main():
-	ft_hello_garden()
-
-if __name__ == "__main__":
-    main() '''s
+    if days > 2:
+        print("Water the plants!")
+    else:
+        print("Plants are fine")
+		

@@ -1,22 +1,17 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    ft_hello_garden.py                                 :+:      :+:    :+:    #
+#    ft_count_harvest_iterative.py                      :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: pidi <pidi@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/07/02 19:15:05 by pidi              #+#    #+#              #
-#    Updated: 2026/07/02 20:45:10 by pidi             ###   ########.fr        #
+#    Created: 2026/07/02 22:12:31 by pidi              #+#    #+#              #
+#    Updated: 2026/07/02 22:15:53 by pidi             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-def ft_hello_garden():
-	print ("Hello, Garden Community!")
-
-''' from ft_hello_garden import ft_hello_garden
-
-def main():
-	ft_hello_garden()
-
-if __name__ == "__main__":
-    main() '''s
+def ft_count_harvest_iterative():
+	days = int(input("Days until harvest: "))
+	for day in range(1, days + 1):
+		print(f"Day {day}")
+	print("Harvest time!")

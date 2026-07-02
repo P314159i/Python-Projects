@@ -1,22 +1,17 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    ft_hello_garden.py                                 :+:      :+:    :+:    #
+#    ft_harvest_total.py                                :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: pidi <pidi@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/07/02 19:15:05 by pidi              #+#    #+#              #
-#    Updated: 2026/07/02 20:45:10 by pidi             ###   ########.fr        #
+#    Created: 2026/07/02 20:40:47 by pidi              #+#    #+#              #
+#    Updated: 2026/07/02 20:48:52 by pidi             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-def ft_hello_garden():
-	print ("Hello, Garden Community!")
-
-''' from ft_hello_garden import ft_hello_garden
-
-def main():
-	ft_hello_garden()
-
-if __name__ == "__main__":
-    main() '''s
+def ft_harvest_total():
+	d1 = int(input("Day 1 harvest: "))
+	d2 = int(input("Day 2 harvest: "))
+	d3 = int(input("Day 3 harvest: "))
+	print(f"Total harvest: {d1 + d2 + d3}")
