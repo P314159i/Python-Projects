@@ -7,7 +7,7 @@ class Plant:
         print(f"{plnt.name}: {plnt.height}cm, {plnt.days} days old")
 
 
-def main():
+def main() -> None:
     rose = Plant()
     rose.name = "Rose"
     rose.days = 30

@@ -6,7 +6,7 @@ def ft_garden_intro() -> None:
     print("Age:", days, "days")
 
 
-def main():
+def main() -> None:
     print("=== Welcome to My Garden ===")
     ft_garden_intro()
     print("=== End of Program ===")
