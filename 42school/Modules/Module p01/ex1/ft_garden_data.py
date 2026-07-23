@@ -1,28 +1,30 @@
 class Plant:
     name: str
-    days: int
+    age: int
     height: int
 
-    def plnt_view(plnt) -> None:
-        print(f"{plnt.name}: {plnt.height}cm, {plnt.days} days old")
+    def show(plnt) -> None:
+        print(f"{plnt.name}: {plnt.height}cm, {plnt.age} days old")
 
 
-def main():
+def main() -> None:
+    print("=== Garden Plant Registry ===")
+
     rose = Plant()
     rose.name = "Rose"
-    rose.days = 30
+    rose.age = 30
     rose.height = 25
-    rose.plnt_view()
+    rose.show()
     sunflower = Plant()
     sunflower.name = "Sunflower"
-    sunflower.days = 45
+    sunflower.age = 45
     sunflower.height = 80
-    sunflower.plnt_view()
+    sunflower.show()
     cactus = Plant()
     cactus.name = "Cactus"
-    cactus.days = 120
+    cactus.age = 120
     cactus.height = 15
-    cactus.plnt_view()
+    cactus.show()
 
 
 if __name__ == "__main__":

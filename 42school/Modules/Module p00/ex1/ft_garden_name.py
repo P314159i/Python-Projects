@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    ft_garden_name.py                                  :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: pidi <pidi@student.42.fr>                  +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/07/02 19:38:04 by pidi              #+#    #+#              #
-#    Updated: 2026/07/02 20:30:23 by pidi             ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-def ft_garden_name():
-	name = input("Enter garden name: ")
-	print (f"Garden: {name}\nStatus: Growing well!")
+def ft_garden_name() -> None:
+    name = input("Enter garden name: ")
+    print(f"Garden: {name}\nStatus: Growing well!")

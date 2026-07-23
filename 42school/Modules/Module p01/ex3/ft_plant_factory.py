@@ -1,28 +1,38 @@
 class Plant:
-    def __init__(self, name: str, height: float, days: int) -> None:
-        self.name = name
-        self.height = height
-        self.days = days
+    def __init__(plnt, name: str, height: float, days: int) -> None:
+        plnt.name = name
+        plnt.height = height
+        plnt.days = days
 
-    def show(self) -> None:
-        print(f"Created: {self.name}: {self.height}cm, "
-              f"{self.days} days old")
+    def grow(plnt) -> None:
+        plnt.height += 0.8
+
+    def age(plnt) -> None:
+        plnt.days += 1
+
+    def show(plnt) -> None:
+        print(f"{plnt.name}: {round(plnt.height, 1)}cm, "
+              f"{plnt.days} days old")
 
 
 def main() -> None:
-    print("=== Plant Factory Output ===")
-
     rose = Plant("Rose", 25.0, 30)
-    oak = Plant("Oak", 200.0, 365)
-    cactus = Plant("Cactus", 5.0, 90)
     sunflower = Plant("Sunflower", 80.0, 45)
-    fern = Plant("Fern", 15.0, 120)
+    cactus = Plant("Cactus", 15.0, 120)
+    fern = Plant("Fern", 35.0, 60)
+    bamboo = Plant("Bamboo", 120.0, 90)
 
+    print("=== Plant Factory Output ===")
+    print("Created: ", end="")
     rose.show()
-    oak.show()
-    cactus.show()
+    print("Created: ", end="")
     sunflower.show()
+    print("Created: ", end="")
+    cactus.show()
+    print("Created: ", end="")
     fern.show()
+    print("Created: ", end="")
+    bamboo.show()
 
 
 if __name__ == "__main__":

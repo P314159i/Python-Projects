@@ -1,35 +1,39 @@
 class Plant:
-    def __init__(self, name: str, height: float, age: int) -> None:
-        self._name = name
-        self._height = 0.0
-        self._age = 0
+    def __init__(plnt, name: str, height: float, age: int) -> None:
+        plnt._name = name
+        plnt._height = 0.0
+        plnt._age = 0
 
-        self.set_height(height)
-        self.set_age(age)
+        plnt.set_height(height)
+        plnt.set_age(age)
 
-    def set_height(self, height: float) -> bool:
+    def set_height(plnt, height: float) -> bool:
         if height < 0:
-            print(f"{self._name}: Error, height can't be negative")
+            print(f"{plnt._name}: Error, height can't be negative")
             return False
-        self._height = height
+
+        plnt._height = height
         return True
 
-    def set_age(self, age: int) -> bool:
+    def set_age(plnt, age: int) -> bool:
         if age < 0:
-            print(f"{self._name}: Error, age can't be negative")
+            print(f"{plnt._name}: Error, age can't be negative")
             return False
-        self._age = age
+
+        plnt._age = age
         return True
 
-    def get_height(self) -> float:
-        return self._height
+    def get_height(plnt) -> float:
+        return plnt._height
 
-    def get_age(self) -> int:
-        return self._age
+    def get_age(plnt) -> int:
+        return plnt._age
 
-    def show(self) -> None:
-        print(f"{self._name}: {self._height:.1f}cm, "
-              f"{self._age} days old")
+    def show(plnt) -> None:
+        print(
+            f"{plnt._name}: {plnt._height:.1f}cm, "
+            f"{plnt._age} days old"
+        )
 
 
 def main() -> None:
