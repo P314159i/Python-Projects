@@ -1,0 +1,90 @@
+import math
+
+
+def get_player_pos() -> tuple[float, float, float]:
+    while True:
+        values: str = input(
+            "Enter new coordinates as floats in format 'x,y,z': "
+        )
+
+        comma_one = values.find(",")
+
+        if comma_one == -1:
+            print("Invalid syntax")
+            continue
+
+        comma_two = values.find(",", comma_one + 1)
+
+        if comma_two == -1:
+            print("Invalid syntax")
+            continue
+
+        if values.find(",", comma_two + 1) != -1:
+            print("Invalid syntax")
+            continue
+
+        x_value = values[:comma_one].strip()
+        y_value = values[comma_one + 1:comma_two].strip()
+        z_value = values[comma_two + 1:].strip()
+
+        if x_value == "" or y_value == "" or z_value == "":
+            print("Invalid syntax")
+            continue
+
+        try:
+            x = float(x_value)
+        except ValueError as error:
+            print(f"Error on parameter '{x_value}': {error}")
+            continue
+
+        try:
+            y = float(y_value)
+        except ValueError as error:
+            print(f"Error on parameter '{y_value}': {error}")
+            continue
+
+        try:
+            z = float(z_value)
+        except ValueError as error:
+            print(f"Error on parameter '{z_value}': {error}")
+            continue
+
+        return (x, y, z)
+
+# def main() -> None:
+#     print("=== Game Coordinate System ===")
+
+#     print("Get a first set of coordinates")
+#     first = get_player_pos()
+
+#     print(f"Got a first tuple: {first}")
+#     print(
+#         f"It includes: X={first[0]}, "
+#         f"Y={first[1]}, Z={first[2]}"
+#     )
+
+#     distance_center = math.sqrt(
+#         first[0] ** 2
+#         + first[1] ** 2
+#         + first[2] ** 2
+#     )
+
+#     print(f"Distance to center: {round(distance_center, 4)}")
+
+#     print("Get a second set of coordinates")
+#     second = get_player_pos()
+
+#     distance = math.sqrt(
+#         (second[0] - first[0]) ** 2
+#         + (second[1] - first[1]) ** 2
+#         + (second[2] - first[2]) ** 2
+#     )
+
+#     print(
+#         "Distance between the 2 sets of coordinates: "
+#         f"{round(distance, 4)}"
+#     )
+
+
+# if __name__ == "__main__":
+#     main()
