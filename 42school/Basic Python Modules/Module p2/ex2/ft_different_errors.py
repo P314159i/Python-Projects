@@ -1,7 +1,8 @@
 def garden_operations(operation_number: int) -> None:
+
+    '''haults when finds error sends back to "try-except" '''
     if operation_number == 0:
         int("abc")
-        '''haults when finds error sends back to "try-except" '''
     elif operation_number == 1:
         10 / 0
     elif operation_number == 2:
