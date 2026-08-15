@@ -3,88 +3,84 @@ import math
 
 def get_player_pos() -> tuple[float, float, float]:
     while True:
-        values: str = input(
-            "Enter new coordinates as floats in format 'x,y,z': "
-        )
+        s = input(
+             "Enter new coordinates as floats in format 'x,y,z': "
+            )
 
-        comma_one = values.find(",")
-
-        if comma_one == -1:
+        if not s:
             print("Invalid syntax")
             continue
 
-        comma_two = values.find(",", comma_one + 1)
+        i = s.find(",")
+        j = s.find(",", i + 1)
 
-        if comma_two == -1:
+        # anything after 2nd "," will be put in "z" which'll get type-checked
+        # if anything other than int, it'll raise ValueError
+        # so no need to check again for s.find(",", j + 1)
+        # but still, printing "invalud syntax" is preffered
+        # against raising ValueError for extra comma (says subject) 
+        if i == -1 or j == -1 or s.find(",", j + 1) != -1:
             print("Invalid syntax")
             continue
 
-        if values.find(",", comma_two + 1) != -1:
-            print("Invalid syntax")
-            continue
+        x_str = s[:i]
+        y_str = s[i + 1:j]
+        z_str = s[j + 1:]
 
-        x_value = values[:comma_one].strip()
-        y_value = values[comma_one + 1:comma_two].strip()
-        z_value = values[comma_two + 1:].strip()
-
-        if x_value == "" or y_value == "" or z_value == "":
-            print("Invalid syntax")
+        try:
+            x = float(x_str)
+        except ValueError as err:
+            print(f"Error on parameter '{x_str}': {err}")
             continue
 
         try:
-            x = float(x_value)
-        except ValueError as error:
-            print(f"Error on parameter '{x_value}': {error}")
+            y = float(y_str)
+        except ValueError as err:
+            print(f"Error on parameter '{y_str}': {err}")
             continue
 
         try:
-            y = float(y_value)
-        except ValueError as error:
-            print(f"Error on parameter '{y_value}': {error}")
-            continue
-
-        try:
-            z = float(z_value)
-        except ValueError as error:
-            print(f"Error on parameter '{z_value}': {error}")
+            z = float(z_str)
+        except ValueError as err:
+            print(f"Error on parameter '{z_str}': {err}")
             continue
 
         return (x, y, z)
 
-# def main() -> None:
-#     print("=== Game Coordinate System ===")
 
-#     print("Get a first set of coordinates")
-#     first = get_player_pos()
+def dist(
+    p1: tuple[float, float, float],
+    p2: tuple[float, float, float]
+) -> float:
+    x1, y1, z1 = p1
+    x2, y2, z2 = p2
 
-#     print(f"Got a first tuple: {first}")
-#     print(
-#         f"It includes: X={first[0]}, "
-#         f"Y={first[1]}, Z={first[2]}"
-#     )
-
-#     distance_center = math.sqrt(
-#         first[0] ** 2
-#         + first[1] ** 2
-#         + first[2] ** 2
-#     )
-
-#     print(f"Distance to center: {round(distance_center, 4)}")
-
-#     print("Get a second set of coordinates")
-#     second = get_player_pos()
-
-#     distance = math.sqrt(
-#         (second[0] - first[0]) ** 2
-#         + (second[1] - first[1]) ** 2
-#         + (second[2] - first[2]) ** 2
-#     )
-
-#     print(
-#         "Distance between the 2 sets of coordinates: "
-#         f"{round(distance, 4)}"
-#     )
+    return math.sqrt(
+        (x2 - x1) ** 2
+        + (y2 - y1) ** 2
+        + (z2 - z1) ** 2
+    )
 
 
-# if __name__ == "__main__":
-#     main()
+def main() -> None:
+    print("=== Game Coordinate System ===")
+    print("Get a first set of coordinates")
+
+    p1 = get_player_pos()
+
+    print(f"Got a first tuple: {p1}")
+    print(f"It includes: X={p1[0]}, Y={p1[1]}, Z={p1[2]}")
+
+    d1 = round(dist(p1, (0, 0, 0)), 4)
+    print(f"Distance to center: {d1}")
+
+    print("Get a second set of coordinates")
+
+    p2 = get_player_pos()
+
+    d2 = round(dist(p2, p1), 4)
+    print(f"Distance between the 2 sets of coordinates: {d2}")
+
+
+if __name__ == "__main__":
+    main()
