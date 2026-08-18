@@ -43,7 +43,7 @@ def main() -> None:
     common = el.intersection(bon, mat, caro)
     print(f"\nCommon achievements: {common}\n\n")
 
-    #differences of bon and (all others in one but unique)
+    # differences of bon and (all others in one but unique)
     only_el = el.difference(bon.union(mat, caro))
     only_bon = bon.difference(el.union(mat, caro))
     only_mat = mat.difference(el.union(bon, caro))

@@ -18,7 +18,7 @@ def get_player_pos() -> tuple[float, float, float]:
         # if anything other than int, it'll raise ValueError
         # so no need to check again for s.find(",", j + 1)
         # but still, printing "invalud syntax" is preffered
-        # against raising ValueError for extra comma (says subject) 
+        # against raising ValueError for extra comma (says subject)
         if i == -1 or j == -1 or s.find(",", j + 1) != -1:
             print("Invalid syntax")
             continue
