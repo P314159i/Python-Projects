@@ -114,8 +114,8 @@ class LogProcessor(DataProcessor):
 
 
 class DataStream():
-''' Polymorphism: 'Any' type object responding to same program in their own way '''
-''' Composition (a class using objects of another class without inheritence) '''
+    ''' Polymorphism: 'Any' type object responding to same program in their own way '''
+    ''' Composition (a class using objects of another class without inheritence) '''
 
     def __init__(self) -> None:
         ''' takes parent clsas as a type,  later can use attr/methods of the parent class '''
@@ -126,119 +126,98 @@ class DataStream():
         self.processors.append(processor)
 
     def process_stream(self, stream: list[typing.Any]) -> None:
-        self.proc: DataProcessor
-
         for item in stream:
             for processor in self.processors:
                 if processor.validate(item):
                     processor.ingest(item)
-                    self.proc = processor
                     break
+            else:
+                print(
+                    "DataStream error - Can't process element in stream: \n\n"
+                    f"{item}"
+                )
     
     def print_processors_stats(self) -> None:
-        counter: int = len(processor.data)
+
+        print("\n\nRunning DataStream statistics:\n\n")
+
+        if not self.processors:
+            print("  No processor found, no data")
+            return
+
         for processor in self.processors:
+            remaining = len(processor.data)
+            total = processor.rank + remaining
+
             print(
-                f"{type(processor).__name__}: "
-                f"{len(processor.data)} items"
+                f"   ~{type(processor).__name__}: "
+                f" total {total} items processed, "
+                f"\n     remaining {remaining} still stored in processor\n"
             )
-
-    
-    processor.output()
-            
-
 
 
 
 def main() -> None:
-    print("=== Code Nexus - Data Processor ===")
+    print("=== Code Nexus - Data Stream ===")
 
     numeric = NumericProcessor()
     text = TextProcessor()
     log = LogProcessor()
 
-    print("\n\nTesting Numeric Processor...\n")
-    print(f"-- Trying to validate input '42': {numeric.validate(42)}")
-    print(f"-- Trying to validate input 'Hello': {numeric.validate('Hello')}")
-    print("-- Test invalid ingestion of 'foo' no prior validation:")
-    try:
-        numeric.ingest("foo")
-    except Exception as error:
-        print(f"   Got exception: {error} 'foo'\n")
+    stream = DataStream()  # new instance
 
-    print(". . . . . . . . . . . .\n")
+    # stats before registering processors
+    stream.print_processors_stats()
 
-    numeric_data: list[int | float] = [1, 2, 3, 4, 5]
-    print(f"Processing data: {numeric_data}\n")
-    numeric.ingest(numeric_data)
+    # register Numeric only
+    stream.register_processor(numeric)
 
-    print("Extracting 3 values...")
-    for _ in range(3):
-        rank, value = numeric.output()
-        print(f"  Numeric value {rank}: '{value}'")
-    print(f"\ndata after removal: {numeric.data}\n")
-
-    print("------------------------------------\n")
-
-    print("Testing Text Processor...\n")
-    print(f"-- Trying to validate input 'Hello': {text.validate('Hello')}")
-    print(f"-- Trying to validate input '42': {text.validate(42)}")
-    try:
-        text.ingest(42)
-    except Exception as error:
-        print(f"   Got exception: {error} '42'\n")
-
-    print(". . . . . . . . . . . .\n")
-
-    text_data = ["Hello", "Nexus", "World"]
-    print(f"Processing data: {text_data}\n")
-    text.ingest(text_data)
-
-    print("Extracting 1 value...")
-    for _ in range(1):
-        rank, value = text.output()
-        print(f"  Text value {rank}: '{value}'")
-    print(f"\ndata after removal: {text.data}\n")
-
-    print("------------------------------------\n")
-
-    print("Testing Log Processor...\n")
-
-    valid_log = {
-        "log_level": "INFO",
-        "log_message": "Connected"
-    }
-
-    print(f"-- Trying to validate valid log: {log.validate(valid_log)}")
-    print(f"-- Trying to validate input 'Hello': {log.validate('Hello')}")
-
-    try:
-        log.ingest("Hello")
-    except Exception as error:
-        print(f"   Got exception: {error} 'Hello'\n")
-
-    print(". . . . . . . . . . . .\n")
-
-    log_data = [
-        {
-            "log_level": "NOTICE",
-            "log_message": "Connection to server"
-        },
-        {
-            "log_level": "ERROR",
-            "log_message": "Unauthorized access!!"
-        }
+    test_data: list[typing.Any] = [
+        "Hello world",
+        [3.14, -1, 2.71],
+        [
+            {
+                "log_level": "WARNING",
+                "log_message": "Telnet access! Use ssh instead"
+            },
+            {
+                "log_level": "INFO",
+                "log_message": "User wil is connected"
+            }
+        ],
+        42,
+        ["Hi", "five"]
     ]
 
-    print(f"Processing data:\n {log_data}\n\n")
-    log.ingest(log_data)
+    print("\n\nProcessing Mixed data...")
+    stream.process_stream(test_data)
+    stream.print_processors_stats()
 
-    print("Extracting 2 values...")
+    print("\n------------------------------------\n")
+
+    # register remaining processors
+    stream.register_processor(text)
+    stream.register_processor(log)
+
+    print("\n\nProcessing Mixed data again...")
+    stream.process_stream(test_data)
+    stream.print_processors_stats()
+
+    print("\n------------------------------------\n")
+
+    print("\nRemoving some items stored in processors...\n")
+
+    for _ in range(3):
+        numeric.output()
+
     for _ in range(2):
-        rank, value = log.output()
-        print(f"  Log value {rank}: '{value}'")
-    print(f"\ndata after removal: {log.data}\n")
-    print("------------------------------------\n")
+        text.output()
+
+    log.output()
+
+    stream.print_processors_stats()
+
+    print("\n------------------------------------\n")
 
 
 if __name__ == "__main__":
