@@ -120,24 +120,32 @@ class DataStream():
     def __init__(self) -> None:
         ''' takes parent clsas as a type,  later can use attr/methods of the parent class '''
         ''' so if I assign any child class, it'll be compatible '''
+        self.processors: list[DataProcessor]= []
 
-        self.processors: list[DataProcessor ]= []
-
-    def register_processor() -> None:
-        processors[self.text or self.num or self.log]
-        self.num = NumericProcessor()
-        self.text = TextProcessor()
-        self.log = LogProcessor()
+    def register_processor(self, processor: DataProcessor) -> None:
+        self.processors.append(processor)
 
     def process_stream(self, stream: list[typing.Any]) -> None:
+        self.proc: DataProcessor
 
         for item in stream:
-            if num.validate(item):
-                num.ingest(item)
-            elif text.validate(item):
-                text.ingest(item)
-            elif log.validate(item):
-                log.ingest(item)
+            for processor in self.processors:
+                if processor.validate(item):
+                    processor.ingest(item)
+                    self.proc = processor
+                    break
+    
+    def print_processors_stats(self) -> None:
+        counter: int = len(processor.data)
+        for processor in self.processors:
+            print(
+                f"{type(processor).__name__}: "
+                f"{len(processor.data)} items"
+            )
+
+    
+    processor.output()
+            
 
 
 
