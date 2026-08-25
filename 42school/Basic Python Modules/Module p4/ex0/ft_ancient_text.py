@@ -20,7 +20,7 @@ def ft_ancient_text() -> None:
         content = file.read()
 
         print("---")
-        print(content)
+        print(content, end="" if content.endswith("\n") else "\n")
         print("---")
 
         file.close()

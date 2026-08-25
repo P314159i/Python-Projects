@@ -43,8 +43,9 @@ def ft_archive_creation() -> None:
 
             start_line = end_line + 1
 
-    string_list.append(content[start_line:])
-    string_trnsfrm.append(content[start_line:] + "#")
+    if content[start_line:] != "":
+        string_list.append(content[start_line:])
+        string_trnsfrm.append(content[start_line:] + "#")
 
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{argv[1]}'")
@@ -75,7 +76,6 @@ def ft_archive_creation() -> None:
 
     print(f"Saving data to '{new_file}'")
     print(f"Data saved in file '{new_file}'.")
-    print(f"File {new_file} closed.")
 
 
 def main() -> None:

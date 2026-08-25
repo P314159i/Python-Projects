@@ -45,8 +45,9 @@ def ft_stream_management() -> None:
 
         start_line = end_line + 1
 
-    string_list.append(content[start_line:])
-    string_trnsfrm.append(content[start_line:] + "#")
+    if content[start_line:] != "":
+        string_list.append(content[start_line:])
+        string_trnsfrm.append(content[start_line:] + "#")
 
     show(string_list)
 
@@ -80,7 +81,6 @@ def ft_stream_management() -> None:
         return
 
     sys.stdout.write(f"Data saved in file '{new_file}'.\n")
-    sys.stdout.write(f"File '{new_file}' closed.\n")
 
 
 def main() -> None:
