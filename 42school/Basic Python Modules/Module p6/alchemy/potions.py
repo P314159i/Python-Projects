@@ -1,0 +1,5 @@
+A function healing_potion() that returns the string “Healing potion brewed with
+’[created earth element]’ and ’[created air element]”.
+• A function strength_potion() that returns the string “Strength potion brewed
+with ’[created fire element]’ and ’[created water element]”.
+• Anything else useful to access the four fundamental elements.
