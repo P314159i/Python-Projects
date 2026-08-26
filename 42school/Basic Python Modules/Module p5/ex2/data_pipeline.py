@@ -1,6 +1,6 @@
 import abc
 import typing
-
+from typing import Protocol
 
 class DataProcessor(abc.ABC):
     ''' abstract parent class '''
@@ -113,10 +113,15 @@ class LogProcessor(DataProcessor):
             )
 
 
+class ExportPlugin(typing.Protocol):
+    ''' processors → DataStream → export plugin '''
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        ...
+
+
 class DataStream():
     ''' Polymorphism: 'Any' type object responding to same program in their own way '''
     ''' Composition (a class using objects of another class without inheritence) '''
-    ''' input → DataStream → processors '''
 
     def __init__(self) -> None:
         ''' takes parent clsas as a type,  later can use attr/methods of the parent class '''
@@ -140,7 +145,7 @@ class DataStream():
     
     def print_processors_stats(self) -> None:
 
-        print("\n\nRunning DataStream statistics:\n\n")
+        print("\n\n\n\nRunning DataStream statistics:\n\n")
 
         if not self.processors:
             print("  No processor found, no data")
@@ -156,22 +161,51 @@ class DataStream():
                 f"\n     remaining {remaining} still stored in processor\n"
             )
 
+    def output_pipeline(self, nb: int, plugin: ExportPlugin) -> None:
+        for processor in self.processors:
+            output_data: list[tuple[int, str]] = []
+            for _ in range(nb):
+                if not processor.data:
+                    break
+                output_data.append(processor.output())
+            plugin.process_output(output_data)
+
+
+class CSVExportPlugin:
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        values = [value for rank, value in data]
+        print("CSV Output:")
+        print(",".join(values))
+        with open("output.csv", "a") as file:
+            file.write(",".join(values) + "\n")
+
+
+class JSONExportPlugin:
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        values = [f'"item_{rank}": "{value}"' for rank, value in data]
+        print("\nJSON Output:\n   ")
+        print("{" + ", ".join(values) + "}")
+        json_data = "{" + ", ".join(values) + "}"
+
+        with open("output.json", "w") as file:
+            file.write(json_data)
 
 
 def main() -> None:
-    print("=== Code Nexus - Data Stream ===")
+
+    print("=== Code Nexus - Data Pipeline ===")
 
     numeric = NumericProcessor()
     text = TextProcessor()
     log = LogProcessor()
 
-    stream = DataStream()  # new instance
+    stream = DataStream()
 
-    # stats before registering processors
     stream.print_processors_stats()
 
-    # register Numeric only
     stream.register_processor(numeric)
+    stream.register_processor(text)
+    stream.register_processor(log)
 
     test_data: list[typing.Any] = [
         "Hello world",
@@ -196,27 +230,46 @@ def main() -> None:
 
     print("\n------------------------------------\n")
 
-    # register remaining processors
-    stream.register_processor(text)
-    stream.register_processor(log)
+    csv = CSVExportPlugin()
 
-    print("\n\nProcessing Mixed data again...")
-    stream.process_stream(test_data)
+    print("\nSending 3 items to CSV plugin...\n")
+    stream.output_pipeline(3, csv)
+
     stream.print_processors_stats()
 
     print("\n------------------------------------\n")
 
-    print("\nRemoving some items stored in processors...\n")
+    second_data: list[typing.Any] = [
+        21,
+        ["I love AI", "LLMs are wonderful", "Stay healthy"],
+        [
+            {
+                "log_level": "ERROR",
+                "log_message": "500 server crash"
+            },
+            {
+                "log_level": "NOTICE",
+                "log_message": "Certificate expires in 10 days"
+            }
+        ],
+        [32, 42, 64, 84, 128, 168],
+        "World hello"
+    ]
 
-    for _ in range(3):
-        numeric.output()
-
-    for _ in range(2):
-        text.output()
-
-    log.output()
+    print("\nProcessing second batch...")
+    stream.process_stream(second_data)
 
     stream.print_processors_stats()
+
+    print("\n------------------------------------\n")
+
+    json = JSONExportPlugin()
+
+    print("\nSending 5 items to JSON plugin...\n")
+    stream.output_pipeline(5, json)
+
+    stream.print_processors_stats()
+
 
     print("\n------------------------------------\n")
 
