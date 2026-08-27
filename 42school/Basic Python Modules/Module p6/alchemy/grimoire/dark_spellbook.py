@@ -1,9 +1,16 @@
-Learn to identify and break the explosive circular dependency curse, which occurs when
-modules try to summon each other in an endless loop, threatening to destroy your laboratory!
+def dark_spell_allowed_ingredients() -> list[str]:
+    return ["ImpStool", "DeathBell", "SpiderVenom", "Nightshade"]
 
- A function dark_spell_allowed_ingredients() that returns a list of allowed
-ingredients for dark magic, Let’s say that dark magic uses the following ingredients:
- “bats”, “frogs”, “arsenic”, and “eyeball”
+def dark_spell_record(spell_name: str, ingredients: str) -> str:
 
-• A function dark_spell_record(spell_name: str, ingredients: str) that returns a string that indicates whether the spell is recorded or rejected. The decision
-comes from the validation function described below.
+    from .dark_validator import validate_ingredients
+
+    validation = validate_ingredients(ingredients)
+
+    if "VALID" in validation:
+        if "INVALID" in validation:
+            return f"{spell_name} not recorded"
+        else:
+            return f"{spell_name} recorded"
+
+# 🌺🍄‍🟫🪻🕷
