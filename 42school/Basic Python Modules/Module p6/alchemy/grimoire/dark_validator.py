@@ -1,5 +1,7 @@
+from .dark_spellbook import dark_spell_allowed_ingredients
+
+
 def validate_ingredients(ingredients: str) -> str:
-    from .dark_spellbook import dark_spell_allowed_ingredients
 
     allowed_ingredients = [
         ingredient.lower()

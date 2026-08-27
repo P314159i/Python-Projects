@@ -1,8 +1,11 @@
-ft_alembic_3.py will use the from ... import ... structure to access
-alchemy/elements.py directly and then create air.
+from alchemy.elements import create_air
 
 
-=== Alembic 3 ===
-Accessing alchemy/elements.py using 'from ... import ...' structure
-Testing create_air: Air element created
-$> python3 ft_alembic_4.py
+def main() -> None:
+    print("=== Alembic 3 ===")
+    print("Accessing alchemy/elements.py")
+    print(f"Testing create_air: {create_air()}")
+
+
+if __name__ == "__main__":
+    main()

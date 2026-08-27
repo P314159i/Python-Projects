@@ -1,5 +1,6 @@
 c: str = "🪄 Created"
 
+
 def create_earth() -> str:
     return f" ⛰️ Earth element {c}"
 

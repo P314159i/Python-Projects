@@ -1,8 +1,11 @@
- ft_alembic_2.py will use the import ... structure to access alchemy/elements.py
-directly and then create earth.
+import alchemy.elements
 
 
-=== Alembic 2 ===
-Accessing alchemy/elements.py using 'import ...' structure
-Testing create_earth: Earth element created
-$> python3 ft_alembic_3.py
+def main() -> None:
+    print("=== Alembic 2 ===")
+    print("Accessing alchemy/elements.py using 'import ...' structure")
+    print(f"Testing create_earth: {alchemy.elements.create_earth()}")
+
+
+if __name__ == "__main__":
+    main()

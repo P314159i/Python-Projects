@@ -1,10 +1,11 @@
 from . import create_air, create_earth
-from elements import *
+from elements import create_fire, create_water
 
 created_earth_element: str = create_earth()
 created_air_element: str = create_air()
 created_fire_element: str = create_fire()
 created_water_element: str = create_water()
+
 
 def healing_potion() -> str:
 

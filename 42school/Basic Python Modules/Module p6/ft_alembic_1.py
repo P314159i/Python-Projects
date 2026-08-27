@@ -1,7 +1,11 @@
-ft_alembic_1.py will use the from ... import ... structure to access elements.py
-directly and then create water.
+from elements import create_water
 
-=== Alembic 1 ===
-Using: 'from ... import ...' structure to access elements.py
-Testing create_water: Water element created
-$> python3 ft_alembic_2.py
+
+def main() -> None:
+    print("=== Alembic 1 ===")
+    print("Using: 'from ... import ...' structure to access elements.py")
+    print(f"Testing create_water: {create_water()}")
+
+
+if __name__ == "__main__":
+    main()

@@ -13,5 +13,6 @@ def light_spell_record(spell_name: str, ingredients: str) -> str:
             return f"{spell_name} not recorded"
         else:
             return f"{spell_name} recorded"
+    return "None"
 
 # ༄⛰️🌊🔥

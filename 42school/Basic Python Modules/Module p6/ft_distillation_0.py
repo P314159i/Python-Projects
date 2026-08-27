@@ -1,9 +1,12 @@
- ft_distillation_0.py will use the from ... import ... structure to access
-alchemy/potions.py directly and then brew both healing and strength potions.
+from alchemy.potions import healing_potion, strength_potion
 
 
-$> python3 ft_distillation_0.py
-=== Distillation 0 ===
-Direct access to alchemy/potions.py
-Testing strength_potion: Strength potion brewed with 'Fire element created' and 'Water element created'
-Testing healing_potion: Healing potion brewed with 'Earth element created' and 'Air element created'
+def main() -> None:
+    print("=== Distillation 0 ===")
+    print("Direct access to alchemy/potions.py")
+    print(f"Testing strength_potion: {strength_potion()}")
+    print(f"Testing healing_potion: {healing_potion()}")
+
+
+if __name__ == "__main__":
+    main()
