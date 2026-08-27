@@ -1,2 +1,8 @@
-A function create_earth() that just returns the string “Earth element created”.
-• A function create_air() that just returns the string “Air element create
+c: str = "🪄 Created"
+
+def create_earth() -> str:
+    return f" ⛰️ Earth element {c}"
+
+
+def create_air() -> str:
+    return f" ༄Air element {c}"

@@ -109,8 +109,9 @@ class LogProcessor(DataProcessor):
                 )
         else:
             self.data.append(
-            f"{data['log_level']}: {data['log_message']}"
+                f"{data['log_level']}: {data['log_message']}"
             )
+
 
 def main() -> None:
     print("=== Code Nexus - Data Processor ===")

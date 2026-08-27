@@ -1,2 +1,8 @@
- A function create_fire() that just returns the string “Fire element created”.
-• A function create_water() that just returns the string “Water element created”
+c: str = "🪄 Created"
+
+def create_fire() -> str:
+    return f"🔥Fire element {c}"
+
+
+def create_water() -> str:
+    return f"🌊Water element {c}"

@@ -1,6 +1,6 @@
 import abc
 import typing
-from typing import Protocol
+
 
 class DataProcessor(abc.ABC):
     ''' abstract parent class '''
@@ -109,24 +109,22 @@ class LogProcessor(DataProcessor):
                 )
         else:
             self.data.append(
-            f"{data['log_level']}: {data['log_message']}"
+                f"{data['log_level']}: {data['log_message']}"
             )
 
 
 class ExportPlugin(typing.Protocol):
-    ''' processors → DataStream → export plugin '''
+    ''' processors → DataStream → ExportPlugin '''
     def process_output(self, data: list[tuple[int, str]]) -> None:
         ...
 
 
-class DataStream():
-    ''' Polymorphism: 'Any' type object responding to same program in their own way '''
-    ''' Composition (a class using objects of another class without inheritence) '''
+class DataStream:
 
     def __init__(self) -> None:
-        ''' takes parent clsas as a type,  later can use attr/methods of the parent class '''
+        ''' uses class attr/methods without making a whole instanc eof it '''
         ''' so if I assign any child class, it'll be compatible '''
-        self.processors: list[DataProcessor]= []
+        self.processors: list[DataProcessor] = []
 
     def register_processor(self, processor: DataProcessor) -> None:
         self.processors.append(processor)
@@ -142,7 +140,7 @@ class DataStream():
                     "DataStream error - Can't process element in stream: \n\n"
                     f"{item}"
                 )
-    
+
     def print_processors_stats(self) -> None:
 
         print("\n\n\n\nRunning DataStream statistics:\n\n")
@@ -269,7 +267,6 @@ def main() -> None:
     stream.output_pipeline(5, json)
 
     stream.print_processors_stats()
-
 
     print("\n------------------------------------\n")
 

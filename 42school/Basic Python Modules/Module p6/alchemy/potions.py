@@ -1,5 +1,20 @@
-A function healing_potion() that returns the string “Healing potion brewed with
-’[created earth element]’ and ’[created air element]”.
-• A function strength_potion() that returns the string “Strength potion brewed
-with ’[created fire element]’ and ’[created water element]”.
-• Anything else useful to access the four fundamental elements.
+from . import create_air, create_earth
+from elements import *
+
+created_earth_element: str = create_earth()
+created_air_element: str = create_air()
+created_fire_element: str = create_fire()
+created_water_element: str = create_water()
+
+def healing_potion() -> str:
+
+    return (".☘︎ ݁˖Healing potion brewed with "
+            f"'{created_earth_element}' &"
+            f"'{created_air_element}'")
+
+
+def strength_potion() -> str:
+
+    return ("⚕ Stregnth potion brewed with "
+            f"'{created_fire_element}' &"
+            f"'{created_water_element}'")
