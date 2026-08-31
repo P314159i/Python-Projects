@@ -1,5 +1,6 @@
-from alchemy import *
+from alchemy import create_air, strength_potion
 from elements import create_fire
+
 
 def lead_to_gold() -> str:
 

@@ -1,12 +1,12 @@
-import alchemy.grimoire as grimoire
+import alchemy.grimoire as light
 
 
 def main() -> None:
     print("=== Kaboom 0 ===")
     print("Using grimoire module direct & 'absolute-ly'")
     print(
-        "Testing record light spell: "
-        f"{grimoire.light_spell_record('Fantasy', 'Earth, wind and fire')}"
+        "Testing record light spell:\n"
+        f"{light.light_spell_record('Fantasy', 'Earth, wind and fire')}"
     )
 
 

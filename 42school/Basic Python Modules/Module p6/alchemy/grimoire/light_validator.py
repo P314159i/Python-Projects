@@ -27,15 +27,8 @@ def validate_ingredients(ingredients: str) -> str:
     result = ", ".join(entered_ingredients[:-1])
 
     if len(entered_ingredients) > 1:
-        result += f" and {entered_ingredients[-1]} -"
+        result += f" and {entered_ingredients[-1]}"
     else:
         result = entered_ingredients[0]
 
     return f"{result} - INVALID"
-
-
-def main() -> None:
-    print(validate_ingredients("air"))
-
-
-main()

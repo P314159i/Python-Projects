@@ -234,6 +234,7 @@ def main() -> None:
     sunflower.bloom()
     sunflower.show()
     show_statistics(sunflower)
+    sunflower.record_age()
 
     anonymous = Plant.create_anonymous()
 

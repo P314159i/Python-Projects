@@ -23,7 +23,7 @@ def validate_ingredients(ingredients: str) -> str:
         else:
             result = entered_ingredients[0]
         return f"{result} - Valid"
-    
+
     result = ", ".join(entered_ingredients[:-1])
     if len(entered_ingredients) > 1:
         result += f" and {entered_ingredients[-1]} -"
