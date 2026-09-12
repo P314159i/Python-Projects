@@ -1,4 +1,4 @@
-from . import create_air, create_earth
+from .elements import create_air, create_earth
 from elements import create_fire, create_water
 
 created_earth_element: str = create_earth()

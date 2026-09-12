@@ -15,7 +15,7 @@ def validate_ingredients(ingredients: str) -> str:
 
     if any(
         ingredient in allowed_ingredients
-        for ingredient in entered_ingredients[:-1]
+        for ingredient in entered_ingredients
     ):
         result = ", ".join(entered_ingredients[:-1])
         if len(entered_ingredients) > 1:

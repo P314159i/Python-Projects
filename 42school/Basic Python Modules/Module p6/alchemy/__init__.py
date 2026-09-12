@@ -1,10 +1,13 @@
-from .elements import create_air, create_earth
+from .elements import create_air
 from .potions import strength_potion
 from .potions import healing_potion as heal
 from . import transmutation
 
 __all__ = [
-    "heal", "transmutation", "strength_potion", "healing_potion",
-    "create_air", "create_earth"
-    ]
+    "create_air",
+    "strength_potion",
+    "heal",
+    "transmutation",
+]
+
 # heal = healing_potion
