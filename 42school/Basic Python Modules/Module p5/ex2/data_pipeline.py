@@ -170,7 +170,7 @@ class DataStream:
 
 
 class CSVExportPlugin:
-    def process_output(self, data: list[tuple[int, str]]) -> None:
+    def process_output(self, data: str) -> None:
         values = [value for rank, value in data]
         print("CSV Output:")
         print(",".join(values))
