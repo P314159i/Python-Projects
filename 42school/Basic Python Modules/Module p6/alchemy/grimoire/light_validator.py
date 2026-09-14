@@ -22,7 +22,7 @@ def validate_ingredients(ingredients: str) -> str:
         else:
             result = entered_ingredients[0]
 
-        return f"{result} - VALID"
+        return f"{ingredients} - VALID"
 
     result = ", ".join(entered_ingredients[:-1])
 
@@ -31,4 +31,4 @@ def validate_ingredients(ingredients: str) -> str:
     else:
         result = entered_ingredients[0]
 
-    return f"{result} - INVALID"
+    return f"{ingredients} - INVALID"
