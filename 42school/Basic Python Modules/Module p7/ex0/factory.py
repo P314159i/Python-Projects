@@ -1,34 +1,42 @@
-    from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod
+from . import creature
+from . import creatures
 
 
-    class ForestCreature:
-        def __init__(self, name = "Forest Creature") -> None:
-            self.name = name
+class CreatureFactory(ABC):
+    def __init__(self) -> None:
+        pass
+    
+    @abstractmethod
+    def create_base(self) -> "creature.Creature":
+        pass
+
+    @abstractmethod
+    def create_evolved(self) -> "creature.Creature":
+        pass
 
 
-    class Creature(ABC):
-        def __init__(self, name, typ) -> None:
-            self.name = name
-            self.typ = typ
-        
-        @abstractmethod
-        def attack(self) -> str:
-            pass
-        
-        def describe(self) -> str:
-            return f"{self.name} is a {self.typ} type Creature"
+class FlameFactory(CreatureFactory):
+    def __init__(self) -> None:
+        pass
+    
+    def create_base(self) -> "creatures.Flameling":
+        make_flameling = creatures.Flameling()
+        return make_flameling
+
+    def create_evolved(self) -> "creatures.Pyrodon":
+        make_pydron = creatures.Pyrodon()
+        return make_pydron
 
 
-    class Flameling (Create):
-        def __init__(self) -> None:
-            pass
-        
-        def attack(self) -> self:
-            return idk
+class AquaFactory(CreatureFactory):
+    def __init__(self) -> None:
+        pass
+    
+    def create_base(self) -> "creatures.Aquabub":
+        make_aquabub = creatures.Aquabub()
+        return make_aquabub
 
-    class ForestFactory(CreatureFactory):
-        def __init__(self) -> None:
-            super().__init__()
-
-    cha        wolf = ForestCreature()
-            return wolf
+    def create_evolved(self) -> "creatures.Torragon":
+        make_torragon = creatures.Torragon()
+        return make_torragon

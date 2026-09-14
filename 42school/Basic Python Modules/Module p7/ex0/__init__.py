@@ -1,1 +1,1 @@
-export factoriesonly
+from .factory import FlameFactory, AquaFactory, CreatureFactory
