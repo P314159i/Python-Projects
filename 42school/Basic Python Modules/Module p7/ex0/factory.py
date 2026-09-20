@@ -6,7 +6,7 @@ from . import creatures
 class CreatureFactory(ABC):
     def __init__(self) -> None:
         pass
-    
+
     @abstractmethod
     def create_base(self) -> "creature.Creature":
         pass
@@ -19,7 +19,7 @@ class CreatureFactory(ABC):
 class FlameFactory(CreatureFactory):
     def __init__(self) -> None:
         pass
-    
+
     def create_base(self) -> "creatures.Flameling":
         make_flameling = creatures.Flameling()
         return make_flameling
@@ -32,7 +32,7 @@ class FlameFactory(CreatureFactory):
 class AquaFactory(CreatureFactory):
     def __init__(self) -> None:
         pass
-    
+
     def create_base(self) -> "creatures.Aquabub":
         make_aquabub = creatures.Aquabub()
         return make_aquabub
