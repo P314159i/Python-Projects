@@ -7,10 +7,10 @@ class SpaceStation(BaseModel):
     name: str = Field(min_length=1, max_length=50)
     crew_size: int = Field(ge=1, le=20)
     power_level: float = Field(ge=0.0, le=100.0)
-    oxygen_level: float = Field(ge=0.0, le=100.0) # ge: <=
+    oxygen_level: float = Field(ge=0.0, le=100.0) # ge: >=
     last_maintenance: datetime # last maintencnace date & time
     is_operational: bool = True
-    optional_notes: str | None = Field(default=None, max_length=200)
+    notes: str | None = Field(default=None, max_length=200)
 
 
 def main() -> None:
@@ -33,6 +33,18 @@ def main() -> None:
         f"Status: {'Operational' if station.is_operational else 'Offline'}"
     )
 
+    try:
+        SpaceStation(
+            station_id="BAD001",
+            name="Invalid Station",
+            crew_size=50,
+            power_level=80.0,
+            oxygen_level=90.0,
+            last_maintenance="2026-09-28T12:00:00"
+        )
+    except ValidationError as error:
+        print("Expected validation error:")
+        print(error.errors()[0]["msg"])
 
 
 if __name__ == "__main__":
