@@ -32,6 +32,7 @@ class SpaceMission(BaseModel):
     mission_status: str = "planned"
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
+    # Validate mission-wide crew and safety requirements.
     @model_validator(mode="after")
     def check_mission_rules(self) -> "SpaceMission":
         if not self.mission_id.startswith("M"):
@@ -143,7 +144,8 @@ def main() -> None:
         )
     except ValidationError as error:
         print("Expected validation error:")
-        print(error.errors()[0]["msg"])
+        message = error.errors()[0]["msg"]
+        print(message.removeprefix("Value error, "))
 
 
 if __name__ == "__main__":

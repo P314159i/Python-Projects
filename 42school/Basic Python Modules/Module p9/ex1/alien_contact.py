@@ -22,6 +22,7 @@ class AlienContact(BaseModel):
     message_received: str | None = Field(default=None, max_length=500)
     is_verified: bool = False
 
+    # Validate rules that depend on multiple fields.
     @model_validator(mode="after")
     def check_rules(self) -> "AlienContact":
         if not self.contact_id.startswith("AC"):
@@ -87,7 +88,8 @@ def main() -> None:
         )
     except ValidationError as error:
         print("Expected validation error:")
-        print(error.errors()[0]["msg"])
+        message = error.errors()[0]["msg"]
+        print(message.removeprefix("Value error, "))
 
 
 if __name__ == "__main__":
