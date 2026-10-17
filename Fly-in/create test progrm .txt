@@ -5,3 +5,46 @@ frameworks like pytest or unittest for unit tests, covering edge cases.
 • Include a .gitignore file to exclude Python artifacts.
 • It is recommended to use virtual environments (e.g., venv or conda) for dependency
 isolation during development.
+
+
+
+
+
+
+Concept	What you'll learn
+Graphs	Connecting locations into a network
+Pathfinding	Finding routes through that network
+Algorithms	Choosing efficient routes
+Dictionaries & sets	Organising connections and tracking visited zones
+Simulation	Updating multiple drones every turn
+Big O	Measuring algorithm efficiency
+
+
+routes = {
+    "base": ["roof", "tunnel"],
+    "roof": ["base", "goal"],
+    "tunnel": ["base", "goal"],
+    "goal": ["roof", "tunnel"]
+}
+
+Order	Topic	What you need to understand
+1	Object-Oriented Programming (OOP)	Classes, objects, methods, self, inheritance, composition
+2	Graphs	Nodes, edges, neighbours, adjacency lists
+3	Graph traversal	BFS (Breadth-First Search), DFS (Depth-First Search)
+4	Pathfinding	Dijkstra's algorithm, shortest paths, weighted graphs
+5	Python data structures	Dictionaries, sets, queues, collections.deque
+6	File parsing	Reading map files, extracting data, validating input
+7	Simulation logic	Turns, simultaneous movement, waiting, collisions
+8	Capacity management	Tracking occupied zones and connections
+9	Optimization	Distributing drones across routes to reduce total turns
+10	Algorithm complexity	Big O notation, execution time, memory usage
+11	Testing and debugging	Edge cases, exception handling, pdb
+12	Code quality	Type hints, mypy, flake8, docstrings
+
+Important distinction: The Fly-in subject requires graph-based routing,
+ optimization, and object-oriented programming. BFS, DFS, Dijkstra, and
+  deque are useful study topics, but the subject doesn't specifically
+  require those algorithms or tools.
+
+Start with OOP, because Fly-in explicitly requires a completely object-oriented 
+implementation. Then study graphs and pathfinding, which form the core of the project.
