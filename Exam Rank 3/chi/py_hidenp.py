@@ -10,3 +10,4 @@ def hidenp(small: str, big: str) -> bool:
 if __name__ == "__main__":
     print(f"True -> {hidenp("abc", "a1b2c3")}")
     print(f"False -> {hidenp("abc", "ab")}")
+    print(hidenp("sing","subsequence testing"))
