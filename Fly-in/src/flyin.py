@@ -2,7 +2,11 @@ from Parsers.map_parser import MapParser
 
 
 def main() -> None:
-    path = "maps/challenger/01_the_impossible_dream.txt"
+    path = ""
+
+    print("  If you wake up in a house that's full of smoke")
+    print("  don't panic")
+    print("  call me and I'll tell you a joke\n")
 
     try:
         parser = MapParser(path)
