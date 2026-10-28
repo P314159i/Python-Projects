@@ -1,25 +1,9 @@
-from pathlib import Path
 from PySide6.QtWidgets import QApplication, QWidget, QComboBox, QVBoxLayout, QLabel
 from PySide6.QtCore import Qt
-from src.Parsers.map_parser import MapParser
+from src.Parsers.map_pick import map_pick, on_map_selected
 
 
-def map_pick() -> dict[str, list[Path]]:
-
-    folder_links: dict[str, list[Path]] = {}
-
-    path_links = [
-        folder for folder in Path("maps").iterdir()
-        if folder.is_dir()
-    ]
-
-    for folder in path_links:
-        folder_links[folder.name] = list(folder.glob("*.txt"))
-
-    return folder_links
-
-
-def show_window() -> str:
+def window() -> str:
 
     qapp = QApplication([])
     qDiffPick = QComboBox()
@@ -64,17 +48,13 @@ def show_window() -> str:
     layout.addWidget(qmapPick, alignment=Qt.AlignmentFlag.AlignHCenter)
     layout.addStretch()
 
+    qmapPick.textActivated.connect(
+        lambda filename: on_map_selected(qDiffPick.currentText(), filename)
+    )
+
     qwidgt.show()
     qapp.exec()
 
-    def on_map_selected(filename: str) -> None:
-        path = Path("maps") / qDiffPick.currentText() / filename
-        parser = MapParser(str(path))
-        parser.parse_drone()
-        parser.parse_hub()
-
-    qmapPick.textActivated.connect(on_map_selected)
 
 
-
-show_window()
+window()

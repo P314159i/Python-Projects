@@ -9,8 +9,8 @@ class Zones(str, Enum):
 
 
 class Parsemodes(BaseModel):
-    start = Field(min_length=1, pattern=r"^[^\s-]+$")
-    end = Field(min_length=1, pattern="r^[^\s-]+$")
-    num = Field(ge=2)
-    zone = Zones | None
-    color = str | None
+    start:str = Field(min_length=1, pattern=r"^[^\s-]+$")
+    end: str = Field(min_length=1, pattern="r^[^\s-]+$")
+    num: int = Field(ge=1)
+    zone: Zones | None = None
+    color: str | None = None
