@@ -1,16 +1,16 @@
 def string_sculptor(text: str) -> str:
-    space = True
+    f = True
     result = ""
     for ch in text:
         if ch.isalpha():
-            if space:
+            if f:
                 result += ch.lower()
-                space = False
+                f = False
             else:
                 result += ch.upper()
-                space = True
+                f = True
         elif ch == " ":
-            space = True
+            f = True
             result += ch
         else:
             result += ch

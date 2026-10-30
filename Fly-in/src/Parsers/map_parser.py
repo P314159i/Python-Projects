@@ -1,14 +1,15 @@
 import re
+from .parse_rules import Hubs, Num
 
 
 class MapParser:
     def __init__(self, path: str) -> None:
         self.path = path
-        self.num: int = 0
-        self.hub_names: set[str] = set()
-
-        self.start_hub: tuple[str, int, int] | None = None
-        self.end_hub: tuple[str, int, int] | None = None
+        self.num: Num | None = 0
+        self.start_hub: Hubs | None = None
+        self.end_hub: Hubs | None = None
+        self.hub_name_dup: set[str] = set()
+        self.hubs: Hubs | None = None
 
         with open(path, "r") as file:
             self.lines = file.readlines()
@@ -45,7 +46,7 @@ class MapParser:
 
     def parse_hub(self) -> None:
         pattern = re.compile(
-            r"(start_hub|end_hub):\s+"
+            r"(start_hub|end_hub|hub):\s+"
             r"([^\s-]+)\s+(-?\d+)\s+(-?\d+)"
             r"(?:\s+\[([^\]]*)\])?"
         )
@@ -56,7 +57,7 @@ class MapParser:
             if not line or line.startswith("#"):
                 continue
 
-            if not line.startswith(("start_hub", "end_hub")):
+            if not line.startswith(("start_hub", "end_hub", "hub")):
                 continue
 
             match = pattern.fullmatch(line)
@@ -77,15 +78,17 @@ class MapParser:
             if hub_type == "end_hub" and self.end_hub is not None:
                 raise ValueError("Duplicate end hub")
 
-            if name in self.hub_names:
+            if name in self.hub_name_dup:
                 raise ValueError(f"Duplicate hub name: {name}")
 
-            self.hub_names.add(name)
+            self.hub_name_dup.add(name)
 
             if hub_type == "start_hub":
                 self.start_hub = (name, x, y)
-            else:
+            elif hub_type == "end_hub":
                 self.end_hub = (name, x, y)
+            elif hub_type == "hub":
+                self.hubs == (name, x, y)
 
         if self.start_hub is None:
             raise ValueError("No start hub found")
