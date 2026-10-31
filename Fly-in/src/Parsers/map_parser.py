@@ -3,8 +3,7 @@ from .parse_rules import Hubs, Zones
 
 
 class MapParser:
-    """Read and validate a Fly-in map file."""
-
+    '''Receives and validates a Fly-in map file'''
     def __init__(self, path: str) -> None:
         self.path = path
         self.num: int | None = None
@@ -13,18 +12,19 @@ class MapParser:
         self.hub_name_dup: set[str] = set()
         self.hubs: dict[str, Hubs] = {}
         self.connections: dict[frozenset[str], int] = {}
-
         with open(path, "r") as file:
             self.lines = file.readlines()
 
     def parse(self) -> None:
-        """Parse the entire map."""
+        '''Parses the entire map'''
+
         self.parse_drone()
         self.parse_hub()
         self.parse_connections()
 
     def parse_drone(self) -> None:
-        """Read and validate the drone count."""
+        '''Reads and validates the drone count'''
+    
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
 
@@ -64,7 +64,7 @@ class MapParser:
         raise ValueError("[1] No drone count found")
 
     def parse_hub(self) -> None:
-        """Read and validate hub definitions."""
+        '''Read and validate hub definitions.'''
         pattern = re.compile(
             r"(start_hub|end_hub|hub):\s+"
             r"([^\s-]+)\s+(-?\d+)\s+(-?\d+)"
@@ -163,7 +163,7 @@ class MapParser:
             )
 
     def parse_connections(self) -> None:
-        """Read and validate connections."""
+        '''Read and validate connections.'''
         defined_hubs: set[str] = set()
 
         for line_num, line in enumerate(self.lines, 1):
