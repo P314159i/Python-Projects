@@ -5,7 +5,7 @@ from .parse_rules import Hubs, Zones, Num, Connection
 
 
 class MapParser:
-    """Receives and validates a Fly-in map file."""
+    '''Receives and validates a Fly-in map file.'''
 
     def __init__(self, path: str) -> None:
         self.path = path
@@ -22,11 +22,12 @@ class MapParser:
             self.lines = file.readlines()
 
     def parse(self) -> None:
-        """Parses the entire map."""
+        '''Parses the entire map.'''
 
         self._parse_drone()
         self._parse_hubs()
         self._parse_connections()
+        self._check_unknown_lines()
 
         if self.error:
             messages = "\n".join(
@@ -36,7 +37,7 @@ class MapParser:
             raise ValueError(messages)
 
     def _parse_drone(self) -> None:
-        """Reads and validates the drone count."""
+        '''Reads and validates the drone count.'''
 
         first_line_num: int | None = None
 
@@ -104,7 +105,7 @@ class MapParser:
                 ))
 
     def _parse_hubs(self) -> None:
-        """Read and validate hub definitions."""
+        '''Read and validate hub definitions.'''
 
         pattern = re.compile(
             r"(start_hub|end_hub|hub):\s+"
@@ -233,7 +234,7 @@ class MapParser:
             ))
 
     def _parse_connections(self) -> None:
-        """Read and validate connections."""
+        '''Read and validate connections.'''
 
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
@@ -312,12 +313,36 @@ class MapParser:
 
             self.connections[edge] = connection
 
+    def _check_unknown_lines(self) -> None:
+        '''Find unknown lines in the map.'''
 
-if __name__ == "__main__":
-    x = MapParser("./maps/medium/03_priority_puzzle.txt")
+        valid_prefixes = (
+            "nb_drones:",
+            "start_hub:",
+            "end_hub:",
+            "hub:",
+            "connection:"
+        )
 
-    try:
-        x.parse()
-    except ValueError as err:
-        print(f"Error: {err}")
-        raise SystemExit(1)
+        for line_num, line in enumerate(self.lines, 1):
+            line = line.split("#", 1)[0].strip()
+
+            if not line:
+                continue
+
+            if not line.startswith(valid_prefixes):
+                self.error.append((
+                    "ValueError",
+                    f"[{line_num}: {line}] Unknown line"))
+
+
+
+
+# if __name__ == "__main__":
+#     x = MapParser("./maps/medium/03_priority_puzzle.txt")
+
+#     try:
+#         x.parse()
+#     except ValueError as err:
+#         print(f"Error: {err}")
+#         raise SystemExit(1)
