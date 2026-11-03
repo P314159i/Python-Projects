@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ValidationError, model_validator
+from pydantic import BaseModel, Field, model_validator
 from enum import Enum
 
 class Zones(str, Enum):
@@ -17,3 +17,8 @@ class Hubs(BaseModel):
 
 class Num(BaseModel):
     num: int = Field(ge=1)
+
+class Connection(BaseModel):
+    a: str = Field(min_length=1, pattern=r"^[^\s-]+$")
+    b: str = Field(min_length=1, pattern=r"^[^\s-]+$")
+    max_drone_capacity: int = Field(default=1, ge=1)

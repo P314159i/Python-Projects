@@ -1,5 +1,4 @@
 from pathlib import Path
-from .map_parser import MapParser
 from PySide6.QtWidgets import QComboBox
 
 
@@ -19,9 +18,11 @@ def map_pick() -> dict[str, list[Path]]:
 
 
 def on_map_selected(qDiffPick: QComboBox, filename: str) -> str:
+    from .map_parser import MapParser
+
     path = Path("maps") / qDiffPick / filename
     parser = MapParser(str(path))
-    parser.parse_drone()
-    parser.parse_hub()
+    parser._parse_drone()
+    parser._parse_hub()
     print(parser.num, parser.start_hub, parser.end_hub)
     return path

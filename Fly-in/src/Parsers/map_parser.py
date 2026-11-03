@@ -1,56 +1,64 @@
 import re
-from .parse_rules import Hubs, Zones
+from .parse_rules import Hubs, Zones, Num, Connection
+from pydantic import ValidationError
 
 
 class MapParser:
     '''Receives and validates a Fly-in map file'''
+
     def __init__(self, path: str) -> None:
         self.path = path
-        self.num: int | None = None
+        self.num: Num | None = None
         self.start_hub: Hubs | None = None
         self.end_hub: Hubs | None = None
         self.hub_name_dup: set[str] = set()
         self.hubs: dict[str, Hubs] = {}
-        self.connections: dict[frozenset[str], int] = {}
+        self.connections: dict[frozenset[str], Connection] = {}
+        self.error: list[str] = []
         with open(path, "r") as file:
             self.lines = file.readlines()
 
     def parse(self) -> None:
         '''Parses the entire map'''
 
-        self.parse_drone()
-        self.parse_hub()
-        self.parse_connections()
+        self._parse_drone()
+        self._parse_hubs()
+        self._parse_connections()
+        print(self.error)
 
-    def parse_drone(self) -> None:
+    def _parse_drone(self) -> None:
         '''Reads and validates the drone count'''
-    
-        for line_num, line in enumerate(self.lines, 1):
-            line = line.split("#", 1)[0].strip()
 
-            if not line:
-                continue
+        try:
 
-            match = re.fullmatch(r"nb_drones:\s*(.*)", line)
+            for line_num, line in enumerate(self.lines, 1):
+                line = line.split("#", 1)[0].strip()
 
-            if match is None:
-                raise ValueError(
-                    f"[{line_num}: {line}] No drone count on first line"
-                )
+                if line in ("nb_drone", "nb_drone:", "nb_drones", "nb_drones:"):
+                    raise ValueError(f"[{line_num}] No drone number found")
 
-            try:
-                number = int(match.group(1))
-            except ValueError:
-                raise ValueError(
-                    f"[{line_num}: {line}] Invalid drone number"
-                )
+                if not line:
+                    continue
 
-            if number <= 0:
-                raise ValueError(
-                    f"[{line_num}: {line}] Drone count must be positive"
-                )
+                match = re.fullmatch(r"nb_drones:\s*(.*)", line)
 
-            self.num = number
+                if match is None:
+                    raise ValueError(f"[{line_num}] No nb_drones found")
+
+                try:
+                    self.num = int(match.group(1))
+                except ValueError:
+                    raise ValueError(f"[{line_num}] Invalid drone number")
+
+                if self.num < 0:
+                    raise ValueError(f"[{line_num}] Drone count must be positive")
+
+                if self.num == 0:
+                    raise ValueError(f"[{line_num}] Drone count must be non-Zero")
+
+                self.num = int(match.group(1))
+                if self.num:
+                    break
 
             for n, later_line in enumerate(self.lines[line_num:], line_num + 1):
                 later_line = later_line.split("#", 1)[0].strip()
@@ -59,13 +67,16 @@ class MapParser:
                     raise ValueError(
                         f"[{n}: {later_line}] Duplicate drone count"
                     )
-            return
 
-        raise ValueError("[1] No drone count found")
+        except ValueError as err:
+            raise
 
-    def parse_hub(self) -> None:
+        return self.num
+
+    def _parse_hubs(self) -> None:
         '''Read and validate hub definitions.'''
-        pattern = re.compile(
+
+        pattern = re.compile( # repeated use
             r"(start_hub|end_hub|hub):\s+"
             r"([^\s-]+)\s+(-?\d+)\s+(-?\d+)"
             r"(?:\s+\[([^\[\]]+)\])?"
@@ -74,10 +85,7 @@ class MapParser:
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
 
-            if not line:
-                continue
-
-            if not line.startswith(("start_hub", "end_hub", "hub")):
+            if not line or not line.startswith(("start_hub", "end_hub", "hub")):
                 continue
 
             match = pattern.fullmatch(line)
@@ -125,8 +133,8 @@ class MapParser:
                     color=color,
                     max_drones=max_drones
                 )
-            except ValueError as err:
-                raise ValueError(f"[{line_num}]: {err}")
+            except ValidationError as err:
+                raise ValueError(f"[{line_num}]: Max_drone should be greater or equal to 1")
 
             if hub_type == "start_hub" and self.start_hub is not None:
                 raise ValueError(
@@ -162,51 +170,42 @@ class MapParser:
                 f"[{len(self.lines) + 1}] No end hub found"
             )
 
-    def parse_connections(self) -> None:
-        '''Read and validate connections.'''
-        defined_hubs: set[str] = set()
+    def _parse_connections(self) -> None:
+        """Read and validate connections."""
 
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
 
-            if not line:
-                continue
-
-            if line.startswith(("hub:", "start_hub:", "end_hub:")):
-                defined_hubs.add(line.split()[1])
-                continue
-
-            if line.startswith("nb_drones:"):
-                continue
-
             if not line.startswith("connection:"):
-                raise ValueError(
-                    f"[{line_num}: {line}] Unknown line"
-                )
+                continue
 
             match = re.fullmatch(
                 r"connection:\s+([^\s-]+)-([^\s-]+)"
-                r"(?:\s+\[max_link_capacity=(\d+)\])?",
+                r"(?:\s+\[max_link_capacity=([^\]]*)\])?",
                 line
             )
 
             if match is None:
                 raise ValueError(
-                    f"[{line_num}: {line}] Invalid connection"
+                    f"[{line_num}: {line}] Invalid connection syntax"
                 )
 
             a, b = match.group(1), match.group(2)
-            capacity = int(match.group(3) or 1)
 
-            if a not in defined_hubs or b not in defined_hubs:
+            if a not in self.hubs or b not in self.hubs:
                 raise ValueError(
-                    f"[{line_num}: {line}] Undefined hub in connection"
+                    f"[{line_num}: {line}] Undefined connection hub"
                 )
 
-            if capacity < 1:
-                raise ValueError(
-                    f"[{line_num}: {line}] Invalid link capacity"
+            try:
+                capacity = int(match.group(3)) if match.group(3) is not None else 1
+                connection = Connection(
+                    a=a, b=b, max_link_capacity=capacity
                 )
+            except (ValueError, ValidationError):
+                raise ValueError(
+                    f"[{line_num}: {line}] Invalid connection capacity"
+                ) from None
 
             edge = frozenset((a, b))
 
@@ -215,4 +214,12 @@ class MapParser:
                     f"[{line_num}: {line}] Duplicate connection"
                 )
 
-            self.connections[edge] = capacity
+            self.connections[edge] = connection
+
+
+x = MapParser("./maps/medium/03_priority_puzzle.txt")
+try:
+    x.parse()
+except ValueError as err:
+    print(f"Error: {err}")
+    raise SystemExit(1)
