@@ -1,10 +1,11 @@
+
 import re
-from .parse_rules import Hubs, Zones, Num, Connection
 from pydantic import ValidationError
+from .parse_rules import Hubs, Zones, Num, Connection
 
 
 class MapParser:
-    '''Receives and validates a Fly-in map file'''
+    """Receives and validates a Fly-in map file."""
 
     def __init__(self, path: str) -> None:
         self.path = path
@@ -13,70 +14,99 @@ class MapParser:
         self.end_hub: Hubs | None = None
         self.hub_name_dup: set[str] = set()
         self.hubs: dict[str, Hubs] = {}
+        self.hub_lines: dict[str, int] = {}
         self.connections: dict[frozenset[str], Connection] = {}
-        self.error: list[str] = []
+        self.error: list[tuple[str, str]] = []
+
         with open(path, "r") as file:
             self.lines = file.readlines()
 
     def parse(self) -> None:
-        '''Parses the entire map'''
+        """Parses the entire map."""
 
         self._parse_drone()
         self._parse_hubs()
         self._parse_connections()
-        print(self.error)
+
+        if self.error:
+            messages = "\n".join(
+                f"{kind}: {message}"
+                for kind, message in self.error
+            )
+            raise ValueError(messages)
 
     def _parse_drone(self) -> None:
-        '''Reads and validates the drone count'''
+        """Reads and validates the drone count."""
 
-        try:
+        first_line_num: int | None = None
 
-            for line_num, line in enumerate(self.lines, 1):
-                line = line.split("#", 1)[0].strip()
+        for line_num, line in enumerate(self.lines, 1):
+            line = line.split("#", 1)[0].strip()
 
-                if line in ("nb_drone", "nb_drone:", "nb_drones", "nb_drones:"):
-                    raise ValueError(f"[{line_num}] No drone number found")
+            if not line:
+                continue
 
-                if not line:
-                    continue
+            first_line_num = line_num
 
+            if line in ("nb_drone", "nb_drone:", "nb_drones", "nb_drones:"):
+                self.error.append((
+                    "ValueError",
+                    f"[{line_num}] No drone number found"
+                ))
+            else:
                 match = re.fullmatch(r"nb_drones:\s*(.*)", line)
 
                 if match is None:
-                    raise ValueError(f"[{line_num}] No nb_drones found")
+                    self.error.append((
+                        "ValueError",
+                        f"[{line_num}] No nb_drones found"
+                    ))
+                elif not match.group(1).strip():
+                    self.error.append((
+                        "ValueError",
+                        f"[{line_num}] No drone number found"
+                    ))
+                else:
+                    try:
+                        number = int(match.group(1))
+                    except ValueError:
+                        self.error.append((
+                            "ValueError",
+                            f"[{line_num}] Invalid drone number"
+                        ))
+                    else:
+                        try:
+                            self.num = Num(num=number)
+                        except ValidationError as err:
+                            for issue in err.errors():
+                                self.error.append((
+                                    "ValidationError",
+                                    f"[{line_num}] "
+                                    f"{issue['loc']}: {issue['msg']}"
+                                ))
+            break
 
-                try:
-                    self.num = int(match.group(1))
-                except ValueError:
-                    raise ValueError(f"[{line_num}] Invalid drone number")
+        if first_line_num is None:
+            self.error.append((
+                "ValueError", "[1] No drone count found"
+            ))
+            return
 
-                if self.num < 0:
-                    raise ValueError(f"[{line_num}] Drone count must be positive")
+        for n, later_line in enumerate(
+            self.lines[first_line_num:], first_line_num + 1
+        ):
+            later_line = later_line.split("#", 1)[0].strip()
 
-                if self.num == 0:
-                    raise ValueError(f"[{line_num}] Drone count must be non-Zero")
-
-                self.num = int(match.group(1))
-                if self.num:
-                    break
-
-            for n, later_line in enumerate(self.lines[line_num:], line_num + 1):
-                later_line = later_line.split("#", 1)[0].strip()
-
-                if later_line.startswith("nb_drones"):
-                    raise ValueError(
-                        f"[{n}: {later_line}] Duplicate drone count"
-                    )
-
-        except ValueError as err:
-            raise
-
-        return self.num
+            if later_line.startswith("nb_drones"):
+                self.error.append((
+                    "ValueError",
+                    f"[{n}: {later_line}] Duplicate drone count"
+                ))
 
     def _parse_hubs(self) -> None:
-        '''Read and validate hub definitions.'''
+        """Read and validate hub definitions."""
 
-        pattern = re.compile( # repeated use
+        pattern = re.compile(
             r"(start_hub|end_hub|hub):\s+"
             r"([^\s-]+)\s+(-?\d+)\s+(-?\d+)"
             r"(?:\s+\[([^\[\]]+)\])?"
@@ -85,15 +115,19 @@ class MapParser:
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
 
-            if not line or not line.startswith(("start_hub", "end_hub", "hub")):
+            if not line or not line.startswith(
+                ("start_hub", "end_hub", "hub")
+            ):
                 continue
 
             match = pattern.fullmatch(line)
 
             if match is None:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Invalid hub definition"
-                )
+                ))
+                continue
 
             hub_type = match.group(1)
             name = match.group(2)
@@ -101,16 +135,25 @@ class MapParser:
             y = int(match.group(4))
 
             metadata: dict[str, str] = {}
+            invalid_metadata = False
 
             for item in (match.group(5) or "").split():
-                pair = re.fullmatch(r"(zone|color|max_drones)=([^=]+)", item)
+                pair = re.fullmatch(
+                    r"(zone|color|max_drones)=([^=]+)", item
+                )
 
                 if pair is None or pair.group(1) in metadata:
-                    raise ValueError(
+                    self.error.append((
+                        "ValueError",
                         f"[{line_num}: {line}] Invalid metadata"
-                    )
+                    ))
+                    invalid_metadata = True
+                    break
 
                 metadata[pair.group(1)] = pair.group(2)
+
+            if invalid_metadata:
+                continue
 
             try:
                 zone = Zones(metadata.get("zone", "normal"))
@@ -120,7 +163,11 @@ class MapParser:
                     max_drones = int(metadata.get("max_drones", "1"))
 
             except ValueError:
-                raise ValueError(f"[{line_num}]: Invalid metadata")
+                self.error.append((
+                    "ValueError",
+                    f"[{line_num}] Invalid metadata"
+                ))
+                continue
 
             color = metadata.get("color")
 
@@ -134,25 +181,38 @@ class MapParser:
                     max_drones=max_drones
                 )
             except ValidationError as err:
-                raise ValueError(f"[{line_num}]: Max_drone should be greater or equal to 1")
+                for issue in err.errors():
+                    self.error.append((
+                        "ValidationError",
+                        f"[{line_num}] "
+                        f"{issue['loc']}: {issue['msg']}"
+                    ))
+                continue
 
             if hub_type == "start_hub" and self.start_hub is not None:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Duplicate start hub"
-                )
+                ))
+                continue
 
             if hub_type == "end_hub" and self.end_hub is not None:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Duplicate end hub"
-                )
+                ))
+                continue
 
             if name in self.hub_name_dup:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Duplicate hub name: {name}"
-                )
+                ))
+                continue
 
             self.hub_name_dup.add(name)
             self.hubs[name] = hub
+            self.hub_lines[name] = line_num
 
             if hub_type == "start_hub":
                 self.start_hub = hub
@@ -161,14 +221,16 @@ class MapParser:
                 self.end_hub = hub
 
         if self.start_hub is None:
-            raise ValueError(
+            self.error.append((
+                "ValueError",
                 f"[{len(self.lines) + 1}] No start hub found"
-            )
+            ))
 
         if self.end_hub is None:
-            raise ValueError(
+            self.error.append((
+                "ValueError",
                 f"[{len(self.lines) + 1}] No end hub found"
-            )
+            ))
 
     def _parse_connections(self) -> None:
         """Read and validate connections."""
@@ -186,40 +248,76 @@ class MapParser:
             )
 
             if match is None:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Invalid connection syntax"
-                )
+                ))
+                continue
 
             a, b = match.group(1), match.group(2)
 
             if a not in self.hubs or b not in self.hubs:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Undefined connection hub"
-                )
+                ))
+                continue
+
+            if (
+                self.hub_lines[a] >= line_num
+                or self.hub_lines[b] >= line_num
+            ):
+                self.error.append((
+                    "ValueError",
+                    f"[{line_num}: {line}] "
+                    "Connection hub defined too late"
+                ))
+                continue
 
             try:
-                capacity = int(match.group(3)) if match.group(3) is not None else 1
-                connection = Connection(
-                    a=a, b=b, max_link_capacity=capacity
+                capacity = (
+                    int(match.group(3))
+                    if match.group(3) is not None else 1
                 )
-            except (ValueError, ValidationError):
-                raise ValueError(
+            except ValueError:
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Invalid connection capacity"
-                ) from None
+                ))
+                continue
+
+            try:
+                connection = Connection(
+                    a=a,
+                    b=b,
+                    max_link_capacity=capacity
+                )
+            except ValidationError as err:
+                for issue in err.errors():
+                    self.error.append((
+                        "ValidationError",
+                        f"[{line_num}] "
+                        f"{issue['loc']}: {issue['msg']}"
+                    ))
+                continue
 
             edge = frozenset((a, b))
 
             if edge in self.connections:
-                raise ValueError(
+                self.error.append((
+                    "ValueError",
                     f"[{line_num}: {line}] Duplicate connection"
-                )
+                ))
+                continue
 
             self.connections[edge] = connection
 
 
-x = MapParser("./maps/medium/03_priority_puzzle.txt")
-try:
-    x.parse()
-except ValueError as err:
-    print(f"Error: {err}")
-    raise SystemExit(1)
+if __name__ == "__main__":
+    x = MapParser("./maps/medium/03_priority_puzzle.txt")
+
+    try:
+        x.parse()
+    except ValueError as err:
+        print(f"Error: {err}")
+        raise SystemExit(1)

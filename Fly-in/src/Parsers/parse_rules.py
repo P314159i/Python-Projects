@@ -16,7 +16,7 @@ class Hubs(BaseModel):
     max_drones: int = Field(default=1, ge=1)
 
 class Num(BaseModel):
-    num: int = Field(ge=1)
+    num: int = Field(ge=1) # Field(strict=True) enforces !
 
 class Connection(BaseModel):
     a: str = Field(min_length=1, pattern=r"^[^\s-]+$")
