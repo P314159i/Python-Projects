@@ -24,6 +24,9 @@ class MapParser:
     def parse(self) -> None:
         '''Parses the entire map.'''
 
+        if self._parsed:
+            return
+        self._parsed = True
         self._parse_drone()
         self._parse_hubs()
         self._parse_connections()
@@ -314,8 +317,6 @@ class MapParser:
             self.connections[edge] = connection
 
     def _check_unknown_lines(self) -> None:
-        '''Find unknown lines in the map.'''
-
         valid_prefixes = (
             "nb_drones:",
             "start_hub:",
@@ -324,16 +325,26 @@ class MapParser:
             "connection:"
         )
 
+        first_seen = False
+
         for line_num, line in enumerate(self.lines, 1):
             line = line.split("#", 1)[0].strip()
 
             if not line:
                 continue
 
+            if not first_seen:
+                first_seen = True
+                continue
+
+            if line.startswith("nb_drones"):
+                continue
+
             if not line.startswith(valid_prefixes):
                 self.error.append((
                     "ValueError",
-                    f"[{line_num}: {line}] Unknown line"))
+                    f"[{line_num}: {line}] Unknown line"
+                ))
 
 
 

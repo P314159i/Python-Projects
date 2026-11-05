@@ -2,4 +2,4 @@
 from .map_selector import window
 # from pathfinder import *
 
-"all" == [window]
+__all__ = [window]
