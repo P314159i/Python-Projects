@@ -17,6 +17,7 @@ class MapParser:
         self.hub_lines: dict[str, int] = {}
         self.connections: dict[frozenset[str], Connection] = {}
         self.error: list[tuple[str, str]] = []
+        self._parsed = False
 
         with open(path, "r") as file:
             self.lines = file.readlines()
@@ -345,8 +346,6 @@ class MapParser:
                     "ValueError",
                     f"[{line_num}: {line}] Unknown line"
                 ))
-
-
 
 
 # if __name__ == "__main__":

@@ -1,40 +1,25 @@
 def hidenp(small: str, big: str) -> bool:
 
-    i = 0
-    j = 0
     k = 0
-    result: str = ""
+    j = 0
+    i = 0
+    result = ""
 
     if small == "":
         return True
 
     for i in range(len(small)):
-        for j in range(k, len(big)):
-            if small[i] == big[j]:
+        for j in range(len(big)):
+            j = k
+            if small[i] == big[j] and i <= j:
                 result += small[i]
-                k = j + 1
                 break
-    print(len(result))
-    print(len(small))
-    print("---")
-    if len(result) == len(small):
+            elif k < len(big) - 1:
+                k += 1
+
+    if len(small) == len(result):
         return True
     return False
-
-
-
-
-#     i = 0
-#     stack: list[str] = []
-#     small = list(small)
-
-#     for s in big:
-#         if i < len(small) and s == small[i]:
-#             stack.append(s)
-#             i += 1
-#     if i == len(small):
-#         return True
-#     return False
 
 
 if __name__ == "__main__":

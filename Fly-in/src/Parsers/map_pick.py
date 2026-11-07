@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QComboBox
 
 
 def map_pick() -> dict[str, list[Path]]:
+    ''' itterates through folders and finds all .txt maps '''
 
     folder_links: dict[str, list[Path]] = {}
 
@@ -11,18 +12,19 @@ def map_pick() -> dict[str, list[Path]]:
         if folder.is_dir()
     ]
 
-    for folder in path_links:
+    for folder in path_links: # .name on path: return final part of the path(name)
         folder_links[folder.name] = list(folder.glob("*.txt"))
 
     return folder_links
 
 
-def on_map_selected(qDiffPick: QComboBox, filename: str) -> str:
+def on_map_selected(DiffPick: str, filename: str) -> None:
+    ''' gets the selected map (from GUI) and parse it '''
+
     from .map_parser import MapParser
 
-    path = Path("maps") / qDiffPick / filename
+    path = Path("maps") / DiffPick / filename
     parser = MapParser(str(path))
-    parser._parse_drone()
-    parser._parse_hub()
-    print(parser.num, parser.start_hub, parser.end_hub)
-    return path
+    parser.parse()
+
+    return parser
