@@ -1,32 +1,28 @@
 def echo_validator(text: str) -> bool:
 
-    text = text.lower().replace(" ", "")
-    k = len(text) // 2
+    a: str = ""
+    b: str = ""
+    l = 0
 
-    a = text[:-k]
-    b = text[k:]
-    b = b[::-1]
+    text = text.lower().replace(" ", "")
 
     if text == "":
         return False
+
+    l = int(len(text) // 2)
+    for c in range (0, l):
+        a += text[c]
+
+    if len(text) % 2 != 0:
+        l += 1
+        for c in range (l, len(text)):
+            b += text[c]
+    if len(text) % 2 == 0:
+        for c in range (l, len(text)):
+            b += text[c]
+    b = b[::-1]
     return a == b
 
-
-
-
-
-
-
-# def echo_validator(text: str) -> bool:
-
-#     text = text.lower().replace(" ", "")
-#     l = len(text) - 1
-#     if text == "":
-#         return False
-#     for i in range (0, int(l / 2) + 1):
-#         if text[i] != text[l - i]:
-#             return False
-#     return True
 
 if __name__ == "__main__":
     print(echo_validator("racecar"))  # Expected: True
@@ -38,3 +34,4 @@ if __name__ == "__main__":
     print(echo_validator("madam"))  # Expected: True
     print(echo_validator("Able was I ere I saw Elba"))  # Expected: True
     print(echo_validator(""))  # Expected: False
+    print(echo_validator("ab!a"))  # Expected: False

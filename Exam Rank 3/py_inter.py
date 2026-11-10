@@ -1,13 +1,16 @@
 def inter(s1: str, s2: str) -> str:
-
-    stack: str = ""
+    i = 0
+    string: str = ""
 
     for s in s1:
-        for c in s2:
-            if c == s:
-                if not stack or (stack and c not in stack):
-                    stack += c
-    return stack
+        i = 0
+        for i in range (0, len(s2)):
+            if s == s2[i] and s not in string:
+                string += s
+                i += 1
+    
+    return string
+
 
 if __name__ == "__main__":
     print(inter("hello", "world"))
