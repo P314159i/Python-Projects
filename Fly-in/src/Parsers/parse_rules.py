@@ -21,4 +21,4 @@ class Num(BaseModel):
 class Connection(BaseModel):
     a: str = Field(min_length=1, pattern=r"^[^\s-]+$")
     b: str = Field(min_length=1, pattern=r"^[^\s-]+$")
-    max_drone_capacity: int = Field(default=1, ge=1)
+    max_link_capacity: int = Field(default=1, ge=1)

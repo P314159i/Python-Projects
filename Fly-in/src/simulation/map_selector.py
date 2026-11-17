@@ -3,7 +3,8 @@ from PySide6.QtCore import Qt
 from src.Parsers.map_pick import map_pick, on_map_selected
 
 
-def window() -> str:
+def window() -> None:
+    ''' main menude where you choose difficulty '''
 
     qapp = QApplication([])
     qDiffPick = QComboBox()
