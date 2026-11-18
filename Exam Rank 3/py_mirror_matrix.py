@@ -1,6 +1,10 @@
 def mirror_matrix(matrix: list[list[int]]) -> list[list[int]]:
+
+    i = 0
     for x in matrix:
-        x.reverse()
+        x = x[::-1]
+        matrix[i] = x
+        i += 1    
     return matrix
 
 if __name__ == "__main__":
