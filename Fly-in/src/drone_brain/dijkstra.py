@@ -1,4 +1,5 @@
 from .graph import Graph
+from src.Parsers.parse_rules import Zones
 
 
 def dijkstra(
@@ -36,6 +37,9 @@ def dijkstra(
                 + graph.neighbours[neighbour][current] # moving cost of wehre we're at -> neighbour
             )
 
+            if new_totalCost_sofar == totalCost_sofar[neighbour]:
+                if graph.hubs[current].zone == Zones.PRIORITY:
+                    next_hop[neighbour] = current
             if new_totalCost_sofar < totalCost_sofar[neighbour]:
                 totalCost_sofar[neighbour] = new_totalCost_sofar
                 next_hop[neighbour] = current # stores next best step for EVERY hub
@@ -58,12 +62,7 @@ def path_maker(
         while current != target:
             if current not in next_hop:
                 return []  # No path exists
-
             current = next_hop[current]
             path.append(current)
 
         return path
-
-
-x = Graph()
-print(dijkstra(x, "goal"))

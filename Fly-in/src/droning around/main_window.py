@@ -4,7 +4,7 @@ from src.Parsers.map_pick import map_pick, on_map_selected
 
 
 def window() -> None:
-    ''' main menude where you choose difficulty '''
+    ''' main menue where you choose maps and difficulty '''
 
     qapp = QApplication([])
     qDiffPick = QComboBox()
