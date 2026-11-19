@@ -9,38 +9,38 @@ def dijkstra(
             ]:
     ''' smarter ones go backwards '''
 
-    costances: dict[str, int | float] = {}
+    totalCost_sofar: dict[str, int | float] = {}
     unvisited: set[str] = set(graph.neighbours.keys())
     next_hop: dict[str, str] = {}
 
     if target not in graph.neighbours:
         raise ValueError(f"Wait... there is no '{target}' target hub to go to!")
     for node in graph.neighbours:
-        costances[node] = float("inf")
+        totalCost_sofar[node] = float("inf")
 
-    costances[target] = 0
+    totalCost_sofar[target] = 0
 
     while unvisited:
-        current = min(unvisited, key=lambda node: costances[node])
+        current = min(unvisited, key=lambda unvis: totalCost_sofar[unvis])
         unvisited.remove(current)
 
-        if costances[current] == float("inf"):
+        if totalCost_sofar[current] == float("inf"):
             break
 
         for neighbour in graph.neighbours[current]:
             if neighbour not in unvisited:
                 continue
 
-            new_costance = (
-                costances[current]
-                + graph.neighbours[neighbour][current]
+            new_totalCost_sofar = (
+                totalCost_sofar[current] # acuumulted until where we're at
+                + graph.neighbours[neighbour][current] # moving cost of wehre we're at -> neighbour
             )
 
-            if new_costance < costances[neighbour]:
-                costances[neighbour] = new_costance
-                next_hop[neighbour] = current
+            if new_totalCost_sofar < totalCost_sofar[neighbour]:
+                totalCost_sofar[neighbour] = new_totalCost_sofar
+                next_hop[neighbour] = current # stores next best step for EVERY hub
 
-    return costances, next_hop
+    return totalCost_sofar, next_hop
 
 
 def path_maker(
@@ -63,3 +63,7 @@ def path_maker(
             path.append(current)
 
         return path
+
+
+x = Graph()
+print(dijkstra(x, "goal"))
