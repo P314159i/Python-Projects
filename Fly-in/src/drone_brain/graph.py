@@ -20,12 +20,9 @@ class Graph:
                 self.neighbours[con.a][con.b] = self.cost[self.hubs[con.b].zone]
                 self.neighbours[con.b][con.a] = self.cost[self.hubs[con.a].zone]
 
+# if __name__ == "__main__":
+#     parser = MapParser("./maps/medium/03_priority_puzzle.txt")
+#     parser.parse()
 
-
-
-if __name__ == "__main__":
-    parser = MapParser("./maps/medium/03_priority_puzzle.txt")
-    parser.parse()
-
-    graph = Graph(parser)
-    print(graph.neighbours)
+#     graph = Graph(parser)
+#     print(graph.neighbours)
