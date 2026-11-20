@@ -144,7 +144,7 @@ class MapParser:
 
             for item in (match.group(5) or "").split():
                 pair = re.fullmatch(
-                    r"(zone|color|max_drones)=([^=]+)", item
+                    r"(zone|color|max_drone_capacity)=([^=]+)", item
                 )
 
                 if pair is None or pair.group(1) in metadata:
@@ -162,10 +162,10 @@ class MapParser:
 
             try:
                 zone = Zones(metadata.get("zone", "normal"))
-                max_drones = 1
+                max_drone_capacity = 1
 
                 if hub_type == "hub":
-                    max_drones = int(metadata.get("max_drones", "1"))
+                    max_drone_capacity = int(metadata.get("max_drones", "1"))
 
             except ValueError:
                 self.error.append((
@@ -183,7 +183,7 @@ class MapParser:
                     y=y,
                     zone=zone,
                     color=color,
-                    max_drones=max_drones
+                    max_drone_capacity=max_drone_capacity
                 )
             except ValidationError as err:
                 for issue in err.errors():
@@ -346,13 +346,3 @@ class MapParser:
                     "ValueError",
                     f"[{line_num}: {line}] Unknown line"
                 ))
-
-
-# if __name__ == "__main__":
-#     x = MapParser("./maps/medium/03_priority_puzzle.txt")
-
-#     try:
-#         x.parse()
-#     except ValueError as err:
-#         print(f"Error: {err}")
-#         raise SystemExit(1)

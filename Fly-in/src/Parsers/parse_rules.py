@@ -13,7 +13,7 @@ class Hubs(BaseModel):
     y: int
     zone: Zones = Zones.NORMAL
     color: str | None = None
-    max_drones: int = Field(default=1, ge=1)
+    max_drone_capacity: int = Field(default=1, ge=1)
 
 class Num(BaseModel):
     num: int = Field(ge=1) # Field(strict=True) enforces !
